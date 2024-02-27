@@ -21,7 +21,7 @@ jobs:
       - name: "📦 Packaging TiddlyDesktop..."
         run: ./package.sh
       - name: "🚀 Uploading packages..."
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: tiddlydesktop-built-files
           path: output/tiddlydesktop-*.zip
