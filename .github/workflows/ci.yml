@@ -55,6 +55,13 @@ jobs:
           NWJS_VERSION=$(<nwjs-version.txt)
           [ -n "$NWJS_VERSION" ] && echo "nwjs-version=$NWJS_VERSION" >> "$GITHUB_OUTPUT"
           echo "td-version=$(bin/get-version-number)" >> "GITHUB_OUTPUT"
+      - name: "Show versions"
+        run: |
+          echo "NW version: $NWJS_VERSION"
+          echo "TD version: $TD_VERSION"
+        env:
+          NWJS_VERSION: ${{ steps.calc-version.outputs.nwjs-version }}
+          TD_VERSION: ${{ steps.calc-version.outputs.td-version }}
       - name: "🗃️ Setting up caching for nw.js..."
         id: nwjs-cache
         uses: actions/cache@v4
