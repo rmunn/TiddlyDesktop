@@ -35,9 +35,17 @@ mkdir -p output/linux64/TiddlyDesktop-linux64-v$(./bin/get-version-number)
 
 # For each platform, copy the stock nw.js binaries overlaying the "source" directory (and icons and plist for the Mac)
 
+# Calculate nw.js version
+
+if [ $# -gt 0 ]; then
+    NWJS_VERSION=$1
+elif [ -z "$NWJS_VERSION" ]; then
+    NWJS_VERSION=0.77.0
+fi
+
 # OS X 64-bit App
 
-cp -RH nwjs/nwjs-sdk-v0.77.0-osx-x64/nwjs.app output/mac64/TiddlyDesktop-mac64-v$(./bin/get-version-number)/TiddlyDesktop.app
+cp -RH nwjs/nwjs-sdk-v${NWJS_VERSION}-osx-x64/nwjs.app output/mac64/TiddlyDesktop-mac64-v$(./bin/get-version-number)/TiddlyDesktop.app
 cp -RH source output/mac64/TiddlyDesktop-mac64-v$(./bin/get-version-number)/TiddlyDesktop.app/Contents/Resources/app.nw
 cp icons/app.icns output/mac64/TiddlyDesktop-mac64-v$(./bin/get-version-number)/TiddlyDesktop.app/Contents/Resources/nw.icns
 cp Info.plist output/mac64/TiddlyDesktop-mac64-v$(./bin/get-version-number)/TiddlyDesktop.app/Contents/Info.plist
@@ -49,7 +57,7 @@ done
 
 # OS X Apple Silicon App
 
-cp -RH nwjs/nwjs-sdk-v0.77.0-osx-arm64/nwjs.app output/macapplesilicon/TiddlyDesktop-macapplesilicon-v$(./bin/get-version-number)/TiddlyDesktop.app
+cp -RH nwjs/nwjs-sdk-v${NWJS_VERSION}-osx-arm64/nwjs.app output/macapplesilicon/TiddlyDesktop-macapplesilicon-v$(./bin/get-version-number)/TiddlyDesktop.app
 cp -RH source output/macapplesilicon/TiddlyDesktop-macapplesilicon-v$(./bin/get-version-number)/TiddlyDesktop.app/Contents/Resources/app.nw
 cp icons/app.icns output/macapplesilicon/TiddlyDesktop-macapplesilicon-v$(./bin/get-version-number)/TiddlyDesktop.app/Contents/Resources/nw.icns
 cp Info.plist output/macapplesilicon/TiddlyDesktop-macapplesilicon-v$(./bin/get-version-number)/TiddlyDesktop.app/Contents/Info.plist
@@ -62,17 +70,17 @@ done
 xattr -c output/macapplesilicon/TiddlyDesktop-macapplesilicon-v$(./bin/get-version-number)/TiddlyDesktop.app
 
 # Windows 64-bit App
-cp -RH nwjs/nwjs-sdk-v0.77.0-win-x64/* output/win64/TiddlyDesktop-win64-v$(./bin/get-version-number)
+cp -RH nwjs/nwjs-sdk-v${NWJS_VERSION}-win-x64/* output/win64/TiddlyDesktop-win64-v$(./bin/get-version-number)
 cp -RH source/* output/win64/TiddlyDesktop-win64-v$(./bin/get-version-number)
 
 # # Windows 32-bit App
-cp -RH nwjs/nwjs-sdk-v0.77.0-win-ia32/* output/win32/TiddlyDesktop-win32-v$(./bin/get-version-number)
+cp -RH nwjs/nwjs-sdk-v${NWJS_VERSION}-win-ia32/* output/win32/TiddlyDesktop-win32-v$(./bin/get-version-number)
 cp -RH source/* output/win32/TiddlyDesktop-win32-v$(./bin/get-version-number)
 
 # # Linux 64-bit App
-cp -RH nwjs/nwjs-sdk-v0.77.0-linux-x64/* output/linux64/TiddlyDesktop-linux64-v$(./bin/get-version-number)
+cp -RH nwjs/nwjs-sdk-v${NWJS_VERSION}-linux-x64/* output/linux64/TiddlyDesktop-linux64-v$(./bin/get-version-number)
 cp -RH source/* output/linux64/TiddlyDesktop-linux64-v$(./bin/get-version-number)
 
 # # Linux 32-bit App
-cp -RH nwjs/nwjs-sdk-v0.77.0-linux-ia32/* output/linux32/TiddlyDesktop-linux32-v$(./bin/get-version-number)
+cp -RH nwjs/nwjs-sdk-v${NWJS_VERSION}-linux-ia32/* output/linux32/TiddlyDesktop-linux32-v$(./bin/get-version-number)
 cp -RH source/* output/linux32/TiddlyDesktop-linux32-v$(./bin/get-version-number)

@@ -15,10 +15,26 @@ jobs:
     steps:
       - name: "💾 Checking out repository code..."
         uses: actions/checkout@v4
+      - name: "🧮 Calculating nw.js version..."
+        id: calc-version
+        run: |
+          NWJS_VERSION=$(<nwjs-version.txt)
+          [ -n "$NWJS_VERSION" ] && echo "nwjs-version=$NWJS_VERSION" >> "$GITHUB_OUTPUT"
+      - name: "🗃️ Setting up caching for nw.js..."
+        id: nwjs-cache
+        uses: actions/cache@v4
+        with:
+           path: nwjs
+           key: nwjs-${{ steps.calc-version.outputs.nwjs-version }}
       - name: "🛝 Downloading nw.js..."
+        if: ${{ steps.nwjs-cache.outputs.cache_hit != 'true' }}
         run: ./download-nwjs.sh
+        env:
+          NWJS_VERSION: ${{ steps.calc-version.outputs.nwjs-version }}
       - name: "🛠️ Building TiddlyDesktop..."
         run: ./bld.sh
+        env:
+          NWJS_VERSION: ${{ steps.calc-version.outputs.nwjs-version }}
       - name: "📦 Packaging TiddlyDesktop..."
         run: ./package.sh
       - name: "🚀 Uploading packages..."
