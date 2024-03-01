@@ -87,7 +87,7 @@ jobs:
           PLATFORM: ${{ matrix.platform }}
           ARCH: ${{ matrix.arch }}
       - name: "🚀 Uploading packages..."
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: tiddlydesktop-${{ matrix.platform-for-pkg }}-v${{ steps.td-version.outputs.version }}.zip
           path: output/tiddlydesktop-${{ matrix.platform-for-pkg }}-v${{ steps.td-version.outputs.version }}.zip
