@@ -27,7 +27,7 @@ jobs:
            path: nwjs
            key: nwjs-${{ steps.calc-version.outputs.nwjs-version }}
       - name: "🛝 Downloading nw.js..."
-        if: ${{ steps.nwjs-cache.outputs.cache_hit != 'true' }}
+        if: ${{ steps.nwjs-cache.outputs.cache-hit != 'true' }}
         run: ./download-nwjs.sh
         env:
           NWJS_VERSION: ${{ steps.calc-version.outputs.nwjs-version }}
