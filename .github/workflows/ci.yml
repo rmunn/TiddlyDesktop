@@ -45,6 +45,7 @@ jobs:
             platform-for-pkg: macapplesilicon
             runs-on: macos-latest
     runs-on: ${{ matrix.runs-on }}
+    name: "Build ${{ matrix.platform-for-pkg }}"
     steps:
       - name: "💾 Checking out repository code..."
         uses: actions/checkout@v4
