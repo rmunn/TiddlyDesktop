@@ -90,5 +90,4 @@ jobs:
       - name: "🚀 Uploading packages..."
         uses: actions/upload-artifact@v3
         with:
-          name: tiddlydesktop-built-files
           path: output/tiddlydesktop-*.zip
