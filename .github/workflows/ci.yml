@@ -54,7 +54,8 @@ jobs:
         run: |
           NWJS_VERSION=$(<nwjs-version.txt)
           [ -n "$NWJS_VERSION" ] && echo "nwjs-version=$NWJS_VERSION" >> "$GITHUB_OUTPUT"
-          echo "td-version=$(bin/get-version-number)" >> "GITHUB_OUTPUT"
+          echo -n "td-version=" >> "GITHUB_OUTPUT"
+          bin/get-version-number | tee -a "GITHUB_OUTPUT"
       - name: "Show versions"
         run: |
           echo "NW version: $NWJS_VERSION"
