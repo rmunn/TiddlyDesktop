@@ -11,10 +11,52 @@ on:
 
 jobs:
   build-and-package:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        bits: [64, 32]
     runs-on: macos-latest
     steps:
       - name: "💾 Checking out repository code..."
         uses: actions/checkout@v4
+      - name: "🖥️ Determining architecture..."
+        id: arch
+        run: |
+          case $OS in
+            ubuntu-latest)
+              PLATFORM=linux
+              EXT=tar.gz
+              ;;
+            windows-latest)
+              PLATFORM=win
+              EXT=zip
+              ;;
+            macos-latest)
+              PLATFORM=osx
+              EXT=zip
+              ;;
+          esac
+
+          case $BITS in
+            64)
+              ARCH=x64
+              ;;
+            32)
+              ARCH=ia32
+              ;;
+          esac
+
+          # osx has x64 and arm64 instead of x64 and ia32; take care of this special case
+          if [ "$PLATFORM" = "osx" -a "$BITS" = "32" ]; then
+            ARCH=arm64
+          fi
+
+          echo "platform=$PLATFORM" >> "$GITHUB_OUTPUT"
+          echo "arch=$ARCH" >> "$GITHUB_OUTPUT"
+          echo "ext=$EXT" >> "$GITHUB_OUTPUT"
+        env:
+          OS: ${{ matrix.os }}
+          BITS: ${{ matrix.bits }}
       - name: "🧮 Calculating nw.js version..."
         id: calc-version
         run: |
@@ -25,18 +67,26 @@ jobs:
         uses: actions/cache@v4
         with:
            path: nwjs
-           key: nwjs-${{ steps.calc-version.outputs.nwjs-version }}
+           key: nwjs-${{ matrix.os}}-${{ matrix.bits }}-${{ steps.calc-version.outputs.nwjs-version }}
       - name: "🛝 Downloading nw.js..."
         if: ${{ steps.nwjs-cache.outputs.cache-hit != 'true' }}
         run: ./download-nwjs.sh
         env:
           NWJS_VERSION: ${{ steps.calc-version.outputs.nwjs-version }}
+          PLATFORM: ${{ steps.arch.outputs.platform }}
+          ARCH: ${{ steps.arch.outputs.arch }}
+          EXT: ${{ steps.arch.outputs.ext }}
       - name: "🛠️ Building TiddlyDesktop..."
         run: ./bld.sh
         env:
           NWJS_VERSION: ${{ steps.calc-version.outputs.nwjs-version }}
+          PLATFORM: ${{ steps.arch.outputs.platform }}
+          ARCH: ${{ steps.arch.outputs.arch }}
       - name: "📦 Packaging TiddlyDesktop..."
         run: ./package.sh
+        env:
+          PLATFORM: ${{ steps.arch.outputs.platform }}
+          ARCH: ${{ steps.arch.outputs.arch }}
       - name: "🚀 Uploading packages..."
         uses: actions/upload-artifact@v3
         with:

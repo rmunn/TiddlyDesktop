@@ -45,6 +45,8 @@ fi
 
 # OS X 64-bit App
 
+if [ "$PLATFORM" = "osx" -a "$ARCH" = "x64" ]; then
+
 cp -RH nwjs/nwjs-sdk-v${NWJS_VERSION}-osx-x64/nwjs.app output/mac64/TiddlyDesktop-mac64-v$(./bin/get-version-number)/TiddlyDesktop.app
 cp -RH source output/mac64/TiddlyDesktop-mac64-v$(./bin/get-version-number)/TiddlyDesktop.app/Contents/Resources/app.nw
 cp icons/app.icns output/mac64/TiddlyDesktop-mac64-v$(./bin/get-version-number)/TiddlyDesktop.app/Contents/Resources/nw.icns
@@ -55,7 +57,11 @@ do
 	cp "./strings/InfoPlist.strings" "$f/InfoPlist.strings"
 done
 
+fi
+
 # OS X Apple Silicon App
+
+if [ "$PLATFORM" = "osx" -a "$ARCH" = "arm64" ]; then
 
 cp -RH nwjs/nwjs-sdk-v${NWJS_VERSION}-osx-arm64/nwjs.app output/macapplesilicon/TiddlyDesktop-macapplesilicon-v$(./bin/get-version-number)/TiddlyDesktop.app
 cp -RH source output/macapplesilicon/TiddlyDesktop-macapplesilicon-v$(./bin/get-version-number)/TiddlyDesktop.app/Contents/Resources/app.nw
@@ -69,18 +75,28 @@ done
 
 xattr -c output/macapplesilicon/TiddlyDesktop-macapplesilicon-v$(./bin/get-version-number)/TiddlyDesktop.app
 
+fi
+
 # Windows 64-bit App
+if [ "$PLATFORM" = "win" -a "$ARCH" = "x64" ]; then
 cp -RH nwjs/nwjs-sdk-v${NWJS_VERSION}-win-x64/* output/win64/TiddlyDesktop-win64-v$(./bin/get-version-number)
 cp -RH source/* output/win64/TiddlyDesktop-win64-v$(./bin/get-version-number)
+fi
 
 # # Windows 32-bit App
+if [ "$PLATFORM" = "win" -a "$ARCH" = "ia32" ]; then
 cp -RH nwjs/nwjs-sdk-v${NWJS_VERSION}-win-ia32/* output/win32/TiddlyDesktop-win32-v$(./bin/get-version-number)
 cp -RH source/* output/win32/TiddlyDesktop-win32-v$(./bin/get-version-number)
+fi
 
 # # Linux 64-bit App
+if [ "$PLATFORM" = "linux" -a "$ARCH" = "x64" ]; then
 cp -RH nwjs/nwjs-sdk-v${NWJS_VERSION}-linux-x64/* output/linux64/TiddlyDesktop-linux64-v$(./bin/get-version-number)
 cp -RH source/* output/linux64/TiddlyDesktop-linux64-v$(./bin/get-version-number)
+fi
 
 # # Linux 32-bit App
+if [ "$PLATFORM" = "linux" -a "$ARCH" = "ia32" ]; then
 cp -RH nwjs/nwjs-sdk-v${NWJS_VERSION}-linux-ia32/* output/linux32/TiddlyDesktop-linux32-v$(./bin/get-version-number)
 cp -RH source/* output/linux32/TiddlyDesktop-linux32-v$(./bin/get-version-number)
+fi

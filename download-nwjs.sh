@@ -14,16 +14,27 @@ fi
 
 # Download nw.js
 
-curl --output "nwjs/nwjs-sdk-v${NWJS_VERSION}-win-x64.zip" "https://dl.nwjs.io/v${NWJS_VERSION}/nwjs-sdk-v${NWJS_VERSION}-win-x64.zip" || exit 1
-curl --output "nwjs/nwjs-sdk-v${NWJS_VERSION}-win-ia32.zip" "https://dl.nwjs.io/v${NWJS_VERSION}/nwjs-sdk-v${NWJS_VERSION}-win-ia32.zip" || exit 1
-curl --output "nwjs/nwjs-sdk-v${NWJS_VERSION}-linux-x64.tar.gz" "https://dl.nwjs.io/v${NWJS_VERSION}/nwjs-sdk-v${NWJS_VERSION}-linux-x64.tar.gz" || exit 1
-curl --output "nwjs/nwjs-sdk-v${NWJS_VERSION}-linux-ia32.tar.gz" "https://dl.nwjs.io/v${NWJS_VERSION}/nwjs-sdk-v${NWJS_VERSION}-linux-ia32.tar.gz" || exit 1
-curl --output "nwjs/nwjs-sdk-v${NWJS_VERSION}-osx-x64.zip" "https://dl.nwjs.io/v${NWJS_VERSION}/nwjs-sdk-v${NWJS_VERSION}-osx-x64.zip" || exit 1
-curl --output "nwjs/nwjs-sdk-v${NWJS_VERSION}-osx-arm64.zip" "https://dl.nwjs.io/v${NWJS_VERSION}/nwjs-sdk-v${NWJS_VERSION}-osx-arm64.zip" || exit 1
+if [ -n "$PLATFORM" -a -n "$ARCH" -a -n "$EXT" ]; then
+    curl --output "nwjs/nwjs-sdk-v${NWJS_VERSION}-${PLATFORM}-${ARCH}.${EXT}" "https://dl.nwjs.io/v${NWJS_VERSION}/nwjs-sdk-v${NWJS_VERSION}-${PLATFORM}-${ARCH}.${EXT}" || exit 1
+else
+    curl --output "nwjs/nwjs-sdk-v${NWJS_VERSION}-win-x64.zip" "https://dl.nwjs.io/v${NWJS_VERSION}/nwjs-sdk-v${NWJS_VERSION}-win-x64.zip" || exit 1
+    curl --output "nwjs/nwjs-sdk-v${NWJS_VERSION}-win-ia32.zip" "https://dl.nwjs.io/v${NWJS_VERSION}/nwjs-sdk-v${NWJS_VERSION}-win-ia32.zip" || exit 1
+    curl --output "nwjs/nwjs-sdk-v${NWJS_VERSION}-linux-x64.tar.gz" "https://dl.nwjs.io/v${NWJS_VERSION}/nwjs-sdk-v${NWJS_VERSION}-linux-x64.tar.gz" || exit 1
+    curl --output "nwjs/nwjs-sdk-v${NWJS_VERSION}-linux-ia32.tar.gz" "https://dl.nwjs.io/v${NWJS_VERSION}/nwjs-sdk-v${NWJS_VERSION}-linux-ia32.tar.gz" || exit 1
+    curl --output "nwjs/nwjs-sdk-v${NWJS_VERSION}-osx-x64.zip" "https://dl.nwjs.io/v${NWJS_VERSION}/nwjs-sdk-v${NWJS_VERSION}-osx-x64.zip" || exit 1
+    curl --output "nwjs/nwjs-sdk-v${NWJS_VERSION}-osx-arm64.zip" "https://dl.nwjs.io/v${NWJS_VERSION}/nwjs-sdk-v${NWJS_VERSION}-osx-arm64.zip" || exit 1
+fi
 
 pushd nwjs
 
+if [ ".$EXT" = ".tar.gz" ]; then
+ls *.gz | xargs -n 1 tar -xvzf || exit 1
+elif [ ".$EXT" = ".zip" ]; then
+ls *.zip | xargs -n 1 unzip || exit 1
+else
+# Running at command0line, not in GitHub Actions
 ls *.gz | xargs -n 1 tar -xvzf || exit 1
 ls *.zip | xargs -n 1 unzip || exit 1
+fi
 
 popd
