@@ -71,7 +71,7 @@ jobs:
         uses: actions/cache@v4
         with:
            path: nwjs
-           key: nwjs-${{ matrix.os}}-${{ matrix.bits }}-${{ steps.calc-version.outputs.nwjs-version }}
+           key: nwjs-${{ matrix.platform }}-${{ matrix.arch }}-${{ steps.calc-version.outputs.nwjs-version }}
       - name: "🛝 Downloading nw.js..."
         if: ${{ steps.nwjs-cache.outputs.cache-hit != 'true' }}
         run: ./download-nwjs.sh
