@@ -59,14 +59,8 @@ jobs:
         id: calc-version
         run: |
           NWJS_VERSION=$(<nwjs-version.txt)
+          [ -n "$NWJS_VERSION" ] && echo "nw.js version: $NWJS_VERSION" || echo "No nwjs-version.txt file found!"
           [ -n "$NWJS_VERSION" ] && echo "nwjs-version=$NWJS_VERSION" >> "$GITHUB_OUTPUT"
-      - name: "🐞 Show versions"
-        run: |
-          echo "NW version: $NWJS_VERSION"
-          echo "TD version: $TD_VERSION"
-        env:
-          NWJS_VERSION: ${{ steps.calc-version.outputs.nwjs-version }}
-          TD_VERSION: ${{ steps.td-version.outputs.version }}
       - name: "🗃️ Setting up caching for nw.js..."
         id: nwjs-cache
         uses: actions/cache@v4
@@ -95,6 +89,5 @@ jobs:
       - name: "🚀 Uploading packages..."
         uses: actions/upload-artifact@v3
         with:
-          # TODO: Improve the matrix and include artifact names in the matrix
           name: tiddlydesktop-${{ matrix.platform-for-pkg }}-v${{ steps.td-version.outputs.version }}.zip
           path: output/tiddlydesktop-${{ matrix.platform-for-pkg }}-v${{ steps.td-version.outputs.version }}.zip
