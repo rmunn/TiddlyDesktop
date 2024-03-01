@@ -47,6 +47,8 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     name: "Build ${{ matrix.platform-for-pkg }}"
     steps:
+      - name: "Set up node.js"
+        uses: actions/setup-node@v4
       - name: "💾 Checking out repository code..."
         uses: actions/checkout@v4
       - name: "🧮 Calculating nw.js version..."
