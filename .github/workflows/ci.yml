@@ -51,6 +51,9 @@ jobs:
         uses: actions/setup-node@v4
       - name: "💾 Checking out repository code..."
         uses: actions/checkout@v4
+      - name: "🧮 Calculating TiddlyDesktop version..."
+        id: td-version
+        uses: beaconbrigade/package-json-version@678dd2c1806ec4db502100af6839911b2b5cd9f5
       - name: "🧮 Calculating nw.js version..."
         id: calc-version
         run: |
@@ -66,7 +69,7 @@ jobs:
           echo "TD version foo: $TD_VERSION_FOO"
         env:
           NWJS_VERSION: ${{ steps.calc-version.outputs.nwjs-version }}
-          TD_VERSION: ${{ steps.calc-version.outputs.td-version }}
+          TD_VERSION: ${{ steps.td-version.outputs.version }}}
           TD_VERSION_FOO: ${{ steps.calc-version.outputs.td-version-foo }}
       - name: "🗃️ Setting up caching for nw.js..."
         id: nwjs-cache
@@ -97,5 +100,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           # TODO: Improve the matrix and include artifact names in the matrix
-          name: tiddlydesktop-${{ matrix.platform-for-pkg }}-v${{ steps.calc-version.outputs.td-version }}.zip
-          path: output/tiddlydesktop-${{ matrix.platform-for-pkg }}-v${{ steps.calc-version.outputs.td-version }}.zip
+          name: tiddlydesktop-${{ matrix.platform-for-pkg }}-v${{ steps.td-version.outputs.version }}}.zip
+          path: output/tiddlydesktop-${{ matrix.platform-for-pkg }}-v${{ steps.td-version.outputs.version }}}.zip
