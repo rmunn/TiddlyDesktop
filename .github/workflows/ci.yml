@@ -90,4 +90,6 @@ jobs:
       - name: "🚀 Uploading packages..."
         uses: actions/upload-artifact@v3
         with:
+          # TODO: Improve the matrix and include artifact names in the matrix
+          name: tiddlydesktop-${{ steps.arch.outputs.platform }}-${{ steps.arch.outputs.arch }}.zip
           path: output/tiddlydesktop-*.zip
