@@ -54,6 +54,13 @@ jobs:
       - name: "🔭 Looking up TiddlyDesktop version..."
         id: td-version
         uses: beaconbrigade/package-json-version@678dd2c1806ec4db502100af6839911b2b5cd9f5
+      - name: "🧮 Calculating TiddlyDesktop version another way..."
+        id: td-version-alt
+        run: |
+          bin/get-version-number
+          TD_VERSION=$(bin/get-version-number)
+          echo "Got $TD_VERSION"
+          echo "version=$TD_VERSION" >> "$GITHUB_OUTPUT"
       - name: "🧮 Calculating nw.js version..."
         id: calc-version
         run: |
@@ -63,9 +70,11 @@ jobs:
         run: |
           echo "NW version: $NWJS_VERSION"
           echo "TD version: $TD_VERSION"
+          echo "TD version alt: $TD_VERSION_ALT"
         env:
           NWJS_VERSION: ${{ steps.calc-version.outputs.nwjs-version }}
           TD_VERSION: ${{ steps.td-version.outputs.version }}
+          TD_VERSION_ALT: ${{ steps.td-version-alt.outputs.version }}
       - name: "🗃️ Setting up caching for nw.js..."
         id: nwjs-cache
         uses: actions/cache@v4
