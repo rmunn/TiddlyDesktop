@@ -13,55 +13,47 @@ jobs:
   build-and-package:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        bits: [64, 32]
-    runs-on: macos-latest
+        include:
+          - platform: linux
+            arch: x64
+            ext: tar.gz
+            platform-for-pkg: linux64
+            runs-on: ubuntu-latest
+          - platform: linux
+            arch: ia32
+            ext: tar.gz
+            platform-for-pkg: linux32
+            runs-on: ubuntu-latest
+          - platform: win
+            arch: x64
+            ext: zip
+            platform-for-pkg: win64
+            runs-on: ubuntu-latest
+          - platform: win
+            arch: ia32
+            ext: zip
+            platform-for-pkg: win32
+            runs-on: ubuntu-latest
+          - platform: osx
+            arch: x64
+            ext: zip
+            platform-for-pkg: mac64
+            runs-on: macos-latest
+          - platform: osx
+            arch: arm64
+            ext: zip
+            platform-for-pkg: macapplesilicon
+            runs-on: macos-latest
+    runs-on: ${{ matrix.runs-on }}
     steps:
       - name: "💾 Checking out repository code..."
         uses: actions/checkout@v4
-      - name: "🖥️ Determining architecture..."
-        id: arch
-        run: |
-          case $OS in
-            ubuntu-latest)
-              PLATFORM=linux
-              EXT=tar.gz
-              ;;
-            windows-latest)
-              PLATFORM=win
-              EXT=zip
-              ;;
-            macos-latest)
-              PLATFORM=osx
-              EXT=zip
-              ;;
-          esac
-
-          case $BITS in
-            64)
-              ARCH=x64
-              ;;
-            32)
-              ARCH=ia32
-              ;;
-          esac
-
-          # osx has x64 and arm64 instead of x64 and ia32; take care of this special case
-          if [ "$PLATFORM" = "osx" -a "$BITS" = "32" ]; then
-            ARCH=arm64
-          fi
-
-          echo "platform=$PLATFORM" >> "$GITHUB_OUTPUT"
-          echo "arch=$ARCH" >> "$GITHUB_OUTPUT"
-          echo "ext=$EXT" >> "$GITHUB_OUTPUT"
-        env:
-          OS: ${{ matrix.os }}
-          BITS: ${{ matrix.bits }}
       - name: "🧮 Calculating nw.js version..."
         id: calc-version
         run: |
           NWJS_VERSION=$(<nwjs-version.txt)
           [ -n "$NWJS_VERSION" ] && echo "nwjs-version=$NWJS_VERSION" >> "$GITHUB_OUTPUT"
+          echo "td-version=$(bin/get-version-number)" >> "GITHUB_OUTPUT"
       - name: "🗃️ Setting up caching for nw.js..."
         id: nwjs-cache
         uses: actions/cache@v4
@@ -73,23 +65,23 @@ jobs:
         run: ./download-nwjs.sh
         env:
           NWJS_VERSION: ${{ steps.calc-version.outputs.nwjs-version }}
-          PLATFORM: ${{ steps.arch.outputs.platform }}
-          ARCH: ${{ steps.arch.outputs.arch }}
-          EXT: ${{ steps.arch.outputs.ext }}
+          PLATFORM: ${{ matrix.platform }}
+          ARCH: ${{ matrix.arch }}
+          EXT: ${{ matrix.ext }}
       - name: "🛠️ Building TiddlyDesktop..."
         run: ./bld.sh
         env:
           NWJS_VERSION: ${{ steps.calc-version.outputs.nwjs-version }}
-          PLATFORM: ${{ steps.arch.outputs.platform }}
-          ARCH: ${{ steps.arch.outputs.arch }}
+          PLATFORM: ${{ matrix.platform }}
+          ARCH: ${{ matrix.arch }}
       - name: "📦 Packaging TiddlyDesktop..."
         run: ./package.sh
         env:
-          PLATFORM: ${{ steps.arch.outputs.platform }}
-          ARCH: ${{ steps.arch.outputs.arch }}
+          PLATFORM: ${{ matrix.platform }}
+          ARCH: ${{ matrix.arch }}
       - name: "🚀 Uploading packages..."
         uses: actions/upload-artifact@v3
         with:
           # TODO: Improve the matrix and include artifact names in the matrix
-          name: tiddlydesktop-${{ steps.arch.outputs.platform }}-${{ steps.arch.outputs.arch }}.zip
-          path: output/tiddlydesktop-*.zip
+          name: tiddlydesktop-${{ matrix.platform-for-pkg }}-v${{ steps.calc-version.outputs.td-version }}.zip
+          path: output/tiddlydesktop-${{ matrix.platform-for-pkg }}-v${{ steps.calc-version.outputs.td-version }}.zip
