@@ -3,7 +3,8 @@ name: Build and package TiddlyDesktop
 on:
   push:
     branches:
-      - master
+      # - master
+      - test-workflow
   pull_request:
     branches:
       - master
