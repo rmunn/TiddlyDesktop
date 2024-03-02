@@ -3,8 +3,9 @@ name: Build and package TiddlyDesktop
 on:
   push:
     branches:
-      # - master
-      - test-workflow
+      - master
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
   pull_request:
     branches:
       - master
@@ -91,3 +92,4 @@ jobs:
         with:
           name: tiddlydesktop-${{ matrix.platform-for-pkg }}-v${{ steps.td-version.outputs.version }}.zip
           path: output/tiddlydesktop-${{ matrix.platform-for-pkg }}-v${{ steps.td-version.outputs.version }}.zip
+      # TODO: Add step to create a draft release and upload build artifacts to it, but only if a v#.#.# tag was pushed
