@@ -124,3 +124,4 @@ jobs:
           draft: true
           files: |
             tiddlydesktop-*-v${{ job.build-and-package.outputs.td-version }}.zip
+          name: "v0.0.19-test" # Normally this would be taken from the tag
